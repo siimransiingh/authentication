@@ -1,4 +1,7 @@
 //jshint esversion:6
+const dotenv = require('dotenv').config({
+    path: __dirname + '/.env'
+  });
 const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
@@ -14,10 +17,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect("mongodb://127.0.0.1:27017/userDB")
 
-const userSchema = {
+const userSchema = new mongoose.Schema( {
     email: String,
     password: String
-};
+});
+
+
+userSchema.plugin(encrypt,{secret: process.env.SECRET, encryptedFields: ['password']});
 
 const User = new mongoose.model("User", userSchema);
 
